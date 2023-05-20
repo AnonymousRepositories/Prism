@@ -8,18 +8,18 @@ Welcome to the anonymous repository for the ASE2023 submission **#217 "Prism: Re
 ### Repository Organization 
 
 ```
-├── data
+├── common/
+│   ├── evaluation.py # Evaluation metrics of clustering results
+│   └── utils.py 
+├── data/
 │   ├── anonymized_trace.csv # The communication trace data
 │   ├── anonymized_metadata.pkl # The metadata between IPs and instances
 │   ├── anonymized_metric.pkl # The resource usage metric data
 │   └── anonymized_label.csv # The functional cluster labels
-├── src
+├── src/
 │   ├── MultiLevelClustering.py # Multivariate Time Series Clustering
 │   ├── trace_partitioning.py # Trace-based partitioning
 │   └── metric_clustering.py # Metric-based clustering
-├── common
-│   ├── evaluation.py # Evaluation metrics of clustering results
-│   └── utils.py 
 ├── ourdir/
 ├── requirements.txt
 └── README.MD
