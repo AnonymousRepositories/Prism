@@ -50,7 +50,7 @@ if __name__ == "__main__":
     threshold = 0.1
     metric_dict = load_pickle(metric_infile)
     print(f"Processing {len(metric_dict)} VMs.")
-    vm2partition_file = Path(f"../outdir/threashold_{threshold}.pkl")
+    vm2partition_file = Path(f"../outdir/threshold_{threshold}.pkl")
 
     partition_list = None
     if params["use_partition"]:

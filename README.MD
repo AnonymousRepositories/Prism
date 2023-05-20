@@ -1,6 +1,6 @@
 ## Prism: Revealing Hidden Functional Clusters from Massive Instances in Cloud Systems
 
-This is the anonymous repository for the ASE2023 submission **#217 "Prism: Revealing Hidden Functional Clusters of Massive Instances in Cloud Systems"**. In this paper, we propose **Prism**, a non-intrusive, effective and efficient solution designed to infer functional clusters of instances by leveraging the communication and resource usage patterns in large-scale cloud systems. 
+Welcome to the anonymous repository for the ASE2023 submission **#217 "Prism: Revealing Hidden Functional Clusters of Massive Instances in Cloud Systems"**. In this paper, we propose **Prism**, a non-intrusive, effective and efficient solution that infers functional clusters of instances from the communication and resource usage patterns in large-scale cloud systems. 
 
 
 ![Overall Framework of Prism](./docs/method_framework.png)
@@ -44,7 +44,7 @@ cd src
 python trace_partitioning.py
 ```
 
-​		Then, the result of trace-based partitioning  will be saved to ```outdir/threashold_*.pkl``` .
+​		Then, the result of trace-based partitioning will be saved to ```outdir/threshold_*.pkl``` .
 
 - Run **Metric-based Clustering**
 
@@ -59,10 +59,10 @@ python metric_clustering.py
 
 The communication trace data and resource usage data utilized in this study were gathered from a prominent real-world cloud vendor. As this information is highly sensitive and contains significant amounts of personally identifiable information (PII), we are obligated to uphold our customers' privacy. Thus, we have opted not to publish the original dataset. Nonetheless, to ensure that our work can provide value to the community, we released **Prism**'s source code with a portion of *anonymized data*.
 
-Specifically, we preliminarily anonymized, cleaned and released relevant data of 1019 instances. Furthermore, we plan to release more data after the review process.
+Specifically, we have anonymized, cleaned, and released relevant data for 1019 instances. Furthermore, we plan to release more data after the review process.
 
 
-The following data contains anonymized data (the id of instances, IPs and functional cluster labels are anonymized) to run **Prism**. *(One can seamlessly adapt **Prism** to another system by replacing them with data in the same format (schema).)*
+The following data contains anonymized data (the id of instances, IPs and functional cluster labels) to run **Prism**. *(One can seamlessly adapt **Prism** to another system by replacing them with data in the same format (schema).)*
 
 #### Communication trace data between instances
 
@@ -88,4 +88,4 @@ The format of ```anonymized_metric.pkl``` is ```{id: {'metric1': [list], 'metric
 
 - ```./data/anonymized_label.csv```
 
-We collected the functional cluster labels of all 1019 instances. For security and privacy purposes, we anomymized the functional cluster labels to ```cluster_i```.
+We collected the functional cluster labels of all 1019 instances. For security and privacy purposes, we anonymized the functional cluster labels to ```cluster_i```.

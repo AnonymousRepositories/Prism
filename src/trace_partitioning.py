@@ -82,7 +82,7 @@ def get_vm2feats(row, metadata, vm2feats):
         vm2feats[vmid].add(srcip)
 
 
-def trace_partition(vm2feats, threashold):
+def trace_partition(vm2feats, threshold):
     build_begin = time.time()
     LS = LocalitySearch()
     LS.build_search_db(vm2feats, dbtype="threshold", threshold=threshold)
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         save_pickle(vm2feats, Path(vm2feats_path))
     print("Total {} VMs.".format(len(vm2feats)))
     
-    partition_list_outpath = Path(f"../outdir/threashold_{threshold}.pkl")
+    partition_list_outpath = Path(f"../outdir/threshold_{threshold}.pkl")
 
     vm2partition = trace_partition(vm2feats, threshold)
 
@@ -156,4 +156,4 @@ if __name__ == "__main__":
 
     function_label_file = f"../data/anonymized_label.csv"
     outdir_root = Path(f"../outdir/partition_list/")
-    evaluator(f"threashold={threshold}", outdir_root, function_label_file, "label", True).evaluate_metrics(vm2partition)
+    evaluator(f"threshold={threshold}", outdir_root, function_label_file, "label", True).evaluate_metrics(vm2partition)
