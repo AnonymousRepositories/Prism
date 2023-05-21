@@ -42,20 +42,14 @@ class LocalitySearch():
             m.update(str(d).encode('utf8'))
         return m
 
-    def compute_jaccard(self, a, b):
-        a = set(a)
-        b = set(b)
-        return len(a&b) / len(a|b)
-
     def query_threshold(self, query):
         query = self.__build_minhash(query)
         results = self.model.query(query)
         return results
 
 
-# Convert "cluster_id => vmid" to "vmid =? cluster_id"
 def get_partitions(vm2partition):
-    vm_partitions = defaultdict(list)  # part_id: [vm list]
+    vm_partitions = defaultdict(list)
     for vmid, cluster_id in vm2partition.items():
         vm_partitions[cluster_id].append(vmid)
     num_partitions = len(vm_partitions)
@@ -82,7 +76,35 @@ def get_vm2feats(row, metadata, vm2feats):
         vm2feats[vmid].add(srcip)
 
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.size = [1] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+                self.size[root_y] += self.size[root_x]
+            elif self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+                self.size[root_x] += self.size[root_y]
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+                self.size[root_x] += self.size[root_y]
+
+
 def trace_partition(vm2feats, threshold):
+    vm2id = {vm : id for id, vm in enumerate(vm2feats.keys())}
     build_begin = time.time()
     LS = LocalitySearch()
     LS.build_search_db(vm2feats, dbtype="threshold", threshold=threshold)
@@ -92,6 +114,7 @@ def trace_partition(vm2feats, threshold):
 
     partition_idx = 0
     vm2partition = dict()
+    
     start = time.time()
     if partition_algorithm == "simple":
         for key, feats in tqdm(vm2feats.items()):
@@ -106,13 +129,12 @@ def trace_partition(vm2feats, threshold):
             else:
                 vm2partition[key] = -1
     elif partition_algorithm == "union_set":
+            Union_Find = UnionFind(len(vm2id))
             for key, feats in tqdm(vm2feats.items()):
                 id1 = vm2id[key]
                 neighbor_keys = LS.query_threshold(feats)
                 for item in neighbor_keys:
                     id2 = vm2id[item]
-                    if Union_Find.parent[id1] == Union_Find.parent[id2]:
-                        continue
                     if Union_Find.find(id1) != Union_Find.find(id2):
                         Union_Find.union(id1, id2)
             for vm, idx in vm2id.items():
@@ -131,7 +153,7 @@ if __name__ == "__main__":
     trace_path  = Path(f"../data/anonymized_trace.csv")
     metadata_path = Path(f"../data/anonymized_metadata.pkl")
     vm2feats_path = Path(f"../outdir/vm2feats.pkl")
-    partition_algorithm = "simple" # or "union_set"
+    partition_algorithm = "simple"
     threshold = 0.1
     if os.path.exists(vm2feats_path):
         vm2feats = load_pickle(Path(vm2feats_path))
